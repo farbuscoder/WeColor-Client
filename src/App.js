@@ -24,7 +24,10 @@ const ColorBox = styled.div`
 
 const App = () => {
   const [user, setUser] = useState({ email: "", password: "" });
+  const [palette, setPalette] = useState({ title: "", desc: "", colors: [] });
+  const [colors, setColors] = useState([]);
 
+  //Setea en el estado user cada vez que realizamos un cambio en los inputs
   const handleInputChange = (e) => {
     setUser({
       ...user,
@@ -32,6 +35,7 @@ const App = () => {
     });
   };
 
+  //Realiza el post con el usuario logeado al endpoint especificado
   const userLogin = async (email, password) => {
     try {
       const userLogged = await axios.post(
@@ -49,10 +53,34 @@ const App = () => {
     }
   };
 
+  //Llama a la funcion userLogin y pasa los datos por parametro
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     await userLogin(user.email, user.password);
+  };
+
+  //Agrega una nueva palette a la base de datos
+  const addNewPalette = async () => {
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_API_URL}/palettes/add`,
+        { title: "Test palette", desc: "new palette", colors: colors },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.log(error.response.data ? error.response.data.message : "");
+    }
+  };
+
+  //Consigue los colores
+  const fetchColors = async () => {
+    setColors(["#9bcaf1", "#edd4fc", "#e9cde9", "#e480cf", "#37656f"]);
+    console.log(colors);
   };
 
   return (
@@ -77,8 +105,15 @@ const App = () => {
         <button onClick={handleSubmit}>Iniciar sesion</button>
       </div>
       <h2>Generador de colores</h2>
-      <button>Generar</button>
-      <Div></Div>
+      <button onClick={fetchColors}>Generar</button>
+      <Div>
+        {colors.map((color, index) => {
+          return (
+            <ColorBox key={index} style={{ backgroundColor: color }}></ColorBox>
+          );
+        })}
+      </Div>
+      <button onClick={addNewPalette}>GUARDAR PALETTE</button>
     </>
   );
 };
