@@ -26,6 +26,7 @@ const App = () => {
   const [user, setUser] = useState({ email: "", password: "" });
   const [palette, setPalette] = useState({ title: "", desc: "", colors: [] });
   const [colors, setColors] = useState([]);
+  const [userId, setUserId] = useState("");
 
   //Setea en el estado user cada vez que realizamos un cambio en los inputs
   const handleInputChange = (e) => {
@@ -47,9 +48,10 @@ const App = () => {
         }
       );
       console.log(userLogged.data);
+      setUserId(userLogged.data.user._id);
       localStorage.setItem("access_token", userLogged.data.token);
     } catch (error) {
-      console.log(error.response);
+      console.log(error.response.data.message);
     }
   };
 
@@ -65,7 +67,12 @@ const App = () => {
     try {
       const res = await axios.post(
         `${process.env.REACT_APP_API_URL}/palettes/add`,
-        { title: "Test palette", desc: "new palette", colors: colors },
+        {
+          userId: userId,
+          title: "Test palette",
+          desc: "new palette",
+          colors: colors,
+        },
         {
           withCredentials: true,
           credentials: "include",
