@@ -1,6 +1,6 @@
 // React hooks
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 //Css styles
 import "./App.css";
@@ -17,6 +17,13 @@ const Div = styled.div`
   grid-gap: 5px;
 `;
 
+const PaletteContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  border: 4px solid green;
+`;
+
 const ColorBox = styled.div`
   height: 50px;
   width: 50px;
@@ -24,9 +31,11 @@ const ColorBox = styled.div`
 
 const App = () => {
   const [user, setUser] = useState({ email: "", password: "" });
-  const [palette, setPalette] = useState({ title: "", desc: "", colors: [] });
+  const [palettes, setPalettes] = useState([]);
   const [colors, setColors] = useState([]);
   const [userId, setUserId] = useState("");
+
+  //const url = "http://localhost:8500/api";
 
   //Setea en el estado user cada vez que realizamos un cambio en los inputs
   const handleInputChange = (e) => {
@@ -35,6 +44,22 @@ const App = () => {
       [e.target.name]: e.target.value,
     });
   };
+
+  useEffect(() => {
+    const fetchPalettes = async () => {
+      try {
+        const resPalettes = await axios.get(
+          `${process.env.REACT_APP_API_URL}/palettes`
+        );
+        setPalettes(resPalettes.data);
+        console.log(resPalettes.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchPalettes();
+  }, []);
 
   //Realiza el post con el usuario logeado al endpoint especificado
   const userLogin = async (email, password) => {
@@ -48,6 +73,8 @@ const App = () => {
         }
       );
       console.log(userLogged.data);
+
+      console.log(document.cookie);
       setUserId(userLogged.data.user._id);
       localStorage.setItem("access_token", userLogged.data.token);
     } catch (error) {
@@ -90,6 +117,50 @@ const App = () => {
     console.log(colors);
   };
 
+  //Like the palette
+
+  const likePalette = async (e) => {
+    const paletteId = e.target.value;
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/users/like/${paletteId}`,
+        {
+          user: {
+            id: userId,
+          },
+        },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+      console.log("La palette fue likeada");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const favorites = async (e) => {
+    const paletteId = e.target.value;
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/users/favorites/${paletteId}`,
+        {
+          user: {
+            id: userId,
+          },
+        },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+      console.log("La palette fue agregada a favorites");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div>
@@ -121,6 +192,33 @@ const App = () => {
         })}
       </Div>
       <button onClick={addNewPalette}>GUARDAR PALETTE</button>
+
+      <h2>Todas la palettes</h2>
+
+      <PaletteContainer>
+        {palettes.map((palette, index) => {
+          return (
+            <div key={index}>
+              <Div key={palette._id}>
+                {palette.colors.map((color, index) => {
+                  return (
+                    <ColorBox
+                      key={index}
+                      style={{ backgroundColor: color }}
+                    ></ColorBox>
+                  );
+                })}
+              </Div>
+              <button onClick={likePalette} key={index} value={palette._id}>
+                Like
+              </button>
+              <button onClick={favorites} key={index + 1} value={palette._id}>
+                Add to favorites
+              </button>
+            </div>
+          );
+        })}
+      </PaletteContainer>
     </>
   );
 };
