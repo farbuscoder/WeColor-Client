@@ -96,7 +96,7 @@ const App = () => {
         `${process.env.REACT_APP_API_URL}/palettes/add`,
         {
           userId: userId,
-          title: "Test palette",
+          title: "CATFISH",
           desc: "new palette",
           colors: colors,
         },
@@ -200,6 +200,7 @@ const App = () => {
           return (
             <div key={index}>
               <Div key={palette._id}>
+                <h2>{palette.title}</h2>
                 {palette.colors.map((color, index) => {
                   return (
                     <ColorBox
