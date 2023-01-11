@@ -8,6 +8,13 @@ import "./App.css";
 //Libraries
 import axios from "axios";
 import styled from "styled-components";
+import Cookies from "js-cookie";
+
+//Material UI
+import Button from "@mui/material/Button";
+import Skeleton from "@mui/material/Skeleton";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import DangerousIcon from "@mui/icons-material/Dangerous";
 
 //Styled Components
 const Div = styled.div`
@@ -29,11 +36,32 @@ const ColorBox = styled.div`
   width: 50px;
 `;
 
+const UserProfile = styled.div`
+  border: 2px solid blue;
+  height: 400px;
+  width: 550px;
+`;
+
+const UserName = styled.h1`
+  color: lightblue;
+`;
+
+const UpdateUserContainer = styled.div`
+  border: 2px solid orange;
+  height: 200px;
+  width: 600px;
+`;
+
 const App = () => {
   const [user, setUser] = useState({ email: "", password: "" });
+  const [updatedUser, setUpdatedUser] = useState({ name: "", email: "" });
   const [palettes, setPalettes] = useState([]);
   const [colors, setColors] = useState([]);
   const [userId, setUserId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
+  const [token, setToken] = useState("");
+  const [isChecked, setIsChecked] = useState(false);
 
   //const url = "http://localhost:8500/api";
 
@@ -45,14 +73,23 @@ const App = () => {
     });
   };
 
+  const handleInputUpdatedUser = (e) => {
+    setUpdatedUser({
+      ...updatedUser,
+      [e.target.name]: e.target.value,
+    });
+  };
+
   useEffect(() => {
     const fetchPalettes = async () => {
+      setIsLoading(true);
       try {
         const resPalettes = await axios.get(
           `${process.env.REACT_APP_API_URL}/palettes`
         );
         setPalettes(resPalettes.data);
         console.log(resPalettes.data);
+        setIsLoading(false);
       } catch (error) {
         console.log(error);
       }
@@ -72,14 +109,18 @@ const App = () => {
           credentials: "include",
         }
       );
-      console.log(userLogged.data);
 
-      console.log(document.cookie);
+      setTokenToCookies(userLogged.data.token);
+      setCurrentUser(userLogged.data.user);
       setUserId(userLogged.data.user._id);
-      localStorage.setItem("access_token", userLogged.data.token);
+      checkCookieToken();
     } catch (error) {
       console.log(error.response.data.message);
     }
+  };
+
+  const setTokenToCookies = async (cookiesToken) => {
+    await Cookies.set("we_color_token", cookiesToken);
   };
 
   //Llama a la funcion userLogin y pasa los datos por parametro
@@ -89,6 +130,33 @@ const App = () => {
     await userLogin(user.email, user.password);
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(
+        `${process.env.REACT_APP_API_URL}/users/${currentUser._id}`,
+        {
+          name: updatedUser.name,
+          email: updatedUser.email,
+        },
+        {
+          withCredentials: true,
+          credentials: "include",
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkCookieToken = async () => {
+    if (Cookies.get("we_color_token")) {
+      setIsChecked(true);
+    }
+
+    return;
+  };
+
   //Agrega una nueva palette a la base de datos
   const addNewPalette = async () => {
     try {
@@ -96,7 +164,7 @@ const App = () => {
         `${process.env.REACT_APP_API_URL}/palettes/add`,
         {
           userId: userId,
-          title: "CATFISH",
+          title: "User 4 Palette",
           desc: "new palette",
           colors: colors,
         },
@@ -180,8 +248,47 @@ const App = () => {
           value={user.password}
           onChange={handleInputChange}
         ></input>
-        <button onClick={handleSubmit}>Iniciar sesion</button>
+        <Button onClick={handleSubmit} variant="outlined">
+          Iniciar sesion
+        </Button>
       </div>
+      {isChecked ? (
+        <CheckBoxIcon color="success" fontSize="large"></CheckBoxIcon>
+      ) : (
+        <DangerousIcon color="error" fontSize="large"></DangerousIcon>
+      )}
+      <h2>Update user</h2>
+      <UpdateUserContainer>
+        <input
+          type="text"
+          name="name"
+          placeholder="name"
+          value={updatedUser.name}
+          onChange={handleInputUpdatedUser}
+        ></input>
+        <input
+          type="text"
+          name="email"
+          placeholder="email"
+          value={updatedUser.email}
+          onChange={handleInputUpdatedUser}
+        ></input>
+        <Button onClick={handleUpdate} variant="contained">
+          Saves changes
+        </Button>
+      </UpdateUserContainer>
+      <h2>Profile</h2>
+      <UserProfile>
+        <UserName>{currentUser ? currentUser.name : "USERNAME"}</UserName>
+        <h2>email: {currentUser ? currentUser.email : "EMAIL"}</h2>
+      </UserProfile>
+      <Button
+        onClick={() => {
+          console.log(document.cookie);
+        }}
+      >
+        COOKIES
+      </Button>
       <h2>Generador de colores</h2>
       <button onClick={fetchColors}>Generar</button>
       <Div>
@@ -194,32 +301,47 @@ const App = () => {
       <button onClick={addNewPalette}>GUARDAR PALETTE</button>
 
       <h2>Todas la palettes</h2>
-
-      <PaletteContainer>
-        {palettes.map((palette, index) => {
-          return (
-            <div key={index}>
-              <Div key={palette._id}>
-                <h2>{palette.title}</h2>
-                {palette.colors.map((color, index) => {
-                  return (
-                    <ColorBox
-                      key={index}
-                      style={{ backgroundColor: color }}
-                    ></ColorBox>
-                  );
-                })}
-              </Div>
-              <button onClick={likePalette} key={index} value={palette._id}>
-                Like
-              </button>
-              <button onClick={favorites} key={index + 1} value={palette._id}>
-                Add to favorites
-              </button>
-            </div>
-          );
-        })}
-      </PaletteContainer>
+      <>
+        {isLoading ? (
+          <>
+            <Skeleton variant="rounded" width={700} height={60} />
+            <Skeleton variant="text" width={700} height={60} />
+            <Skeleton variant="text" width={700} height={60} />
+            <Skeleton variant="text" width={700} height={60} />
+            <Skeleton variant="text" width={700} height={60} />
+          </>
+        ) : (
+          <PaletteContainer>
+            {palettes.map((palette, index) => {
+              return (
+                <div key={index}>
+                  <Div key={palette._id}>
+                    <h2>{palette.title}</h2>
+                    {palette.colors.map((color, index) => {
+                      return (
+                        <ColorBox
+                          key={index}
+                          style={{ backgroundColor: color }}
+                        ></ColorBox>
+                      );
+                    })}
+                  </Div>
+                  <button onClick={likePalette} key={index} value={palette._id}>
+                    Like
+                  </button>
+                  <button
+                    onClick={favorites}
+                    key={index + 1}
+                    value={palette._id}
+                  >
+                    Add to favorites
+                  </button>
+                </div>
+              );
+            })}
+          </PaletteContainer>
+        )}
+      </>
     </>
   );
 };
