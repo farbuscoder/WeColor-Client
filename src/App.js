@@ -60,7 +60,7 @@ const App = () => {
   const [userId, setUserId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState();
-  const [token, setToken] = useState("");
+  // const [token, setToken] = useState("");
   const [isChecked, setIsChecked] = useState(false);
 
   //const url = "http://localhost:8500/api";
