@@ -56,11 +56,13 @@ const App = () => {
   const [user, setUser] = useState({ email: "", password: "" });
   const [updatedUser, setUpdatedUser] = useState({ name: "", email: "" });
   const [palettes, setPalettes] = useState([]);
+  const [favoritesPalettes, setfavoritesPalettes] = useState([]);
   const [colors, setColors] = useState([]);
   const [userId, setUserId] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [currentUser, setCurrentUser] = useState();
   // const [token, setToken] = useState("");
+  const [showFavorites, setShowFavorites] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
 
   //const url = "http://localhost:8500/api";
@@ -85,7 +87,7 @@ const App = () => {
       setIsLoading(true);
       try {
         const resPalettes = await axios.get(
-          `${process.env.REACT_APP_API_URL}/palettes`
+          `${process.env.REACT_APP_API_URL}/palettes/get/trend`
         );
         setPalettes(resPalettes.data);
         console.log(resPalettes.data);
@@ -97,6 +99,29 @@ const App = () => {
 
     fetchPalettes();
   }, []);
+
+  const showFavoritesPalettes = async () => {
+    try {
+      if (isChecked) {
+        const favoritesPalettes = await axios.get(
+          `${process.env.REACT_APP_API_URL}/users/get/favorites/${currentUser._id}`,
+          {
+            withCredentials: true,
+            credentials: "include",
+          }
+        );
+        setfavoritesPalettes(favoritesPalettes.data);
+      }
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleFavoritesPalettes = async () => {
+    setShowFavorites(!showFavorites);
+    showFavoritesPalettes();
+  };
 
   //Realiza el post con el usuario logeado al endpoint especificado
   const userLogin = async (email, password) => {
@@ -145,7 +170,7 @@ const App = () => {
         }
       );
     } catch (error) {
-      console.log(error);
+      console.log(error.response.data ? error.response.data.message : "");
     }
   };
 
@@ -182,7 +207,6 @@ const App = () => {
   //Consigue los colores
   const fetchColors = async () => {
     setColors(["#9bcaf1", "#edd4fc", "#e9cde9", "#e480cf", "#37656f"]);
-    console.log(colors);
   };
 
   //Like the palette
@@ -208,7 +232,7 @@ const App = () => {
     }
   };
 
-  const favorites = async (e) => {
+  const addPaletteToFavorites = async (e) => {
     const paletteId = e.target.value;
     try {
       await axios.put(
@@ -301,6 +325,11 @@ const App = () => {
       <button onClick={addNewPalette}>GUARDAR PALETTE</button>
 
       <h2>Todas la palettes</h2>
+
+      <Button onClick={handleFavoritesPalettes} variant="contained">
+        Ver palettes favoritas
+      </Button>
+
       <>
         {isLoading ? (
           <>
@@ -310,7 +339,7 @@ const App = () => {
             <Skeleton variant="text" width={700} height={60} />
             <Skeleton variant="text" width={700} height={60} />
           </>
-        ) : (
+        ) : !showFavorites ? (
           <PaletteContainer>
             {palettes.map((palette, index) => {
               return (
@@ -326,11 +355,12 @@ const App = () => {
                       );
                     })}
                   </Div>
+                  <h3>Likes: {palette.likesNumber}</h3>
                   <button onClick={likePalette} key={index} value={palette._id}>
                     Like
                   </button>
                   <button
-                    onClick={favorites}
+                    onClick={addPaletteToFavorites}
                     key={index + 1}
                     value={palette._id}
                   >
@@ -340,6 +370,47 @@ const App = () => {
               );
             })}
           </PaletteContainer>
+        ) : isChecked ? (
+          favoritesPalettes.length == 0 ? (
+            <h2>No hay palettes seleccionadas como favoritas</h2>
+          ) : (
+            <PaletteContainer>
+              {favoritesPalettes.map((palette, index) => {
+                return (
+                  <div key={index}>
+                    <Div key={palette._id}>
+                      <h2>{palette.title}</h2>
+                      {palette.colors.map((color, index) => {
+                        return (
+                          <ColorBox
+                            key={index}
+                            style={{ backgroundColor: color }}
+                          ></ColorBox>
+                        );
+                      })}
+                    </Div>
+                    <h3>Likes: {palette.likesNumber}</h3>
+                    <button
+                      onClick={likePalette}
+                      key={index}
+                      value={palette._id}
+                    >
+                      Like
+                    </button>
+                    <button
+                      onClick={addPaletteToFavorites}
+                      key={index + 1}
+                      value={palette._id}
+                    >
+                      Add to favorites
+                    </button>
+                  </div>
+                );
+              })}
+            </PaletteContainer>
+          )
+        ) : (
+          <h2>Inicie sesion para ver</h2>
         )}
       </>
     </>
