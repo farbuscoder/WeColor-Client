@@ -9,12 +9,19 @@ import "./App.css";
 import axios from "axios";
 import styled from "styled-components";
 import Cookies from "js-cookie";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 //Material UI
 import Button from "@mui/material/Button";
 import Skeleton from "@mui/material/Skeleton";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DangerousIcon from "@mui/icons-material/Dangerous";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import PanToolIcon from "@mui/icons-material/PanTool";
+
+//Components
+import AppBar from "./Components/AppBar";
 
 //Styled Components
 const Div = styled.div`
@@ -64,6 +71,13 @@ const App = () => {
   // const [token, setToken] = useState("");
   const [showFavorites, setShowFavorites] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      mode: darkMode ? "dark" : "light",
+    },
+  });
 
   //const url = "http://localhost:8500/api";
 
@@ -111,6 +125,8 @@ const App = () => {
           }
         );
         setfavoritesPalettes(favoritesPalettes.data);
+        console.log(favoritesPalettes.data);
+        console.log(typeof favoritesPalettes.data);
       }
       return;
     } catch (error) {
@@ -253,166 +269,254 @@ const App = () => {
     }
   };
 
+  const reOrderPalettes = (list, startIndex, endIndex) => {
+    const result = [...list];
+    const [removed] = result.splice(startIndex, 1);
+    result.splice(endIndex, 0, removed);
+    return result;
+  };
+
   return (
     <>
-      <div>
-        {" "}
-        <h1>Login</h1>
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          value={user.email}
-          onChange={handleInputChange}
-        ></input>
-        <input
-          type="text"
-          name="password"
-          placeholder="password"
-          value={user.password}
-          onChange={handleInputChange}
-        ></input>
-        <Button onClick={handleSubmit} variant="outlined">
-          Iniciar sesion
-        </Button>
-      </div>
-      {isChecked ? (
-        <CheckBoxIcon color="success" fontSize="large"></CheckBoxIcon>
-      ) : (
-        <DangerousIcon color="error" fontSize="large"></DangerousIcon>
-      )}
-      <h2>Update user</h2>
-      <UpdateUserContainer>
-        <input
-          type="text"
-          name="name"
-          placeholder="name"
-          value={updatedUser.name}
-          onChange={handleInputUpdatedUser}
-        ></input>
-        <input
-          type="text"
-          name="email"
-          placeholder="email"
-          value={updatedUser.email}
-          onChange={handleInputUpdatedUser}
-        ></input>
-        <Button onClick={handleUpdate} variant="contained">
-          Saves changes
-        </Button>
-      </UpdateUserContainer>
-      <h2>Profile</h2>
-      <UserProfile>
-        <UserName>{currentUser ? currentUser.name : "USERNAME"}</UserName>
-        <h2>email: {currentUser ? currentUser.email : "EMAIL"}</h2>
-      </UserProfile>
-      <Button
-        onClick={() => {
-          console.log(document.cookie);
-        }}
-      >
-        COOKIES
-      </Button>
-      <h2>Generador de colores</h2>
-      <button onClick={fetchColors}>Generar</button>
-      <Div>
-        {colors.map((color, index) => {
-          return (
-            <ColorBox key={index} style={{ backgroundColor: color }}></ColorBox>
-          );
-        })}
-      </Div>
-      <button onClick={addNewPalette}>GUARDAR PALETTE</button>
-
-      <h2>Todas la palettes</h2>
-
-      <Button onClick={handleFavoritesPalettes} variant="contained">
-        Ver palettes favoritas
-      </Button>
-
-      <>
-        {isLoading ? (
-          <>
-            <Skeleton variant="rounded" width={700} height={60} />
-            <Skeleton variant="text" width={700} height={60} />
-            <Skeleton variant="text" width={700} height={60} />
-            <Skeleton variant="text" width={700} height={60} />
-            <Skeleton variant="text" width={700} height={60} />
-          </>
-        ) : !showFavorites ? (
-          <PaletteContainer>
-            {palettes.map((palette, index) => {
-              return (
-                <div key={index}>
-                  <Div key={palette._id}>
-                    <h2>{palette.title}</h2>
-                    {palette.colors.map((color, index) => {
-                      return (
-                        <ColorBox
-                          key={index}
-                          style={{ backgroundColor: color }}
-                        ></ColorBox>
-                      );
-                    })}
-                  </Div>
-                  <h3>Likes: {palette.likesNumber}</h3>
-                  <button onClick={likePalette} key={index} value={palette._id}>
-                    Like
-                  </button>
-                  <button
-                    onClick={addPaletteToFavorites}
-                    key={index + 1}
-                    value={palette._id}
-                  >
-                    Add to favorites
-                  </button>
-                </div>
-              );
-            })}
-          </PaletteContainer>
-        ) : isChecked ? (
-          favoritesPalettes.length == 0 ? (
-            <h2>No hay palettes seleccionadas como favoritas</h2>
-          ) : (
-            <PaletteContainer>
-              {favoritesPalettes.map((palette, index) => {
-                return (
-                  <div key={index}>
-                    <Div key={palette._id}>
-                      <h2>{palette.title}</h2>
-                      {palette.colors.map((color, index) => {
-                        return (
-                          <ColorBox
-                            key={index}
-                            style={{ backgroundColor: color }}
-                          ></ColorBox>
-                        );
-                      })}
-                    </Div>
-                    <h3>Likes: {palette.likesNumber}</h3>
-                    <button
-                      onClick={likePalette}
-                      key={index}
-                      value={palette._id}
-                    >
-                      Like
-                    </button>
-                    <button
-                      onClick={addPaletteToFavorites}
-                      key={index + 1}
-                      value={palette._id}
-                    >
-                      Add to favorites
-                    </button>
-                  </div>
-                );
-              })}
-            </PaletteContainer>
-          )
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AppBar
+          check={darkMode}
+          change={() => {
+            setDarkMode(!darkMode);
+          }}
+        ></AppBar>
+        <div>
+          {" "}
+          <h1>Login</h1>
+          <input
+            type="text"
+            name="email"
+            placeholder="email"
+            value={user.email}
+            onChange={handleInputChange}
+          ></input>
+          <input
+            type="password"
+            name="password"
+            placeholder="password"
+            value={user.password}
+            onChange={handleInputChange}
+          ></input>
+          <Button onClick={handleSubmit} variant="outlined">
+            Iniciar sesion
+          </Button>
+        </div>
+        {isChecked ? (
+          <CheckBoxIcon color="success" fontSize="large"></CheckBoxIcon>
         ) : (
-          <h2>Inicie sesion para ver</h2>
+          <DangerousIcon color="error" fontSize="large"></DangerousIcon>
         )}
-      </>
+        <h2>Update user</h2>
+        <UpdateUserContainer>
+          <input
+            type="text"
+            name="name"
+            placeholder="name"
+            value={updatedUser.name}
+            onChange={handleInputUpdatedUser}
+          ></input>
+          <input
+            type="text"
+            name="email"
+            placeholder="email"
+            value={updatedUser.email}
+            onChange={handleInputUpdatedUser}
+          ></input>
+          <Button onClick={handleUpdate} variant="contained">
+            Saves changes
+          </Button>
+        </UpdateUserContainer>
+        <h2>Profile</h2>
+        <UserProfile>
+          <UserName>{currentUser ? currentUser.name : "USERNAME"}</UserName>
+          <h2>email: {currentUser ? currentUser.email : "EMAIL"}</h2>
+        </UserProfile>
+        <Button
+          onClick={() => {
+            console.log(document.cookie);
+          }}
+        >
+          COOKIES
+        </Button>
+        <h2>Generador de colores</h2>
+        <button onClick={fetchColors}>Generar</button>
+        <Div>
+          {colors.map((color, index) => {
+            return (
+              <ColorBox
+                key={index}
+                style={{ backgroundColor: color }}
+              ></ColorBox>
+            );
+          })}
+        </Div>
+        <button onClick={addNewPalette}>GUARDAR PALETTE</button>
+
+        <h2>Todas la palettes</h2>
+
+        <Button onClick={handleFavoritesPalettes} variant="contained">
+          Ver palettes favoritas
+        </Button>
+
+        <>
+          <DragDropContext
+            onDragEnd={(result) => {
+              {
+                const { source, destination } = result;
+                if (!destination) {
+                  return;
+                }
+
+                if (
+                  source.index === destination.index &&
+                  source.droppableId === destination.droppableId
+                ) {
+                  return;
+                }
+
+                setPalettes((prevPalette) =>
+                  reOrderPalettes(prevPalette, source.index, destination.index)
+                );
+
+                setfavoritesPalettes((prevPalette) =>
+                  reOrderPalettes(prevPalette, source.index, destination.index)
+                );
+              }
+            }}
+          >
+            <Droppable droppableId="palettes">
+              {(droppableProvided) => (
+                <div
+                  {...droppableProvided.droppableProps}
+                  ref={droppableProvided.innerRef}
+                >
+                  <>
+                    {isLoading ? (
+                      <>
+                        <Skeleton variant="rounded" width={700} height={60} />
+                        <Skeleton variant="text" width={700} height={60} />
+                        <Skeleton variant="text" width={700} height={60} />
+                        <Skeleton variant="text" width={700} height={60} />
+                        <Skeleton variant="text" width={700} height={60} />
+                      </>
+                    ) : !showFavorites ? (
+                      <PaletteContainer>
+                        {palettes.map((palette, index) => {
+                          return (
+                            <Draggable
+                              key={palette._id}
+                              draggableId={palette._id}
+                              index={index}
+                            >
+                              {(draggableProvided) => (
+                                <div
+                                  {...draggableProvided.draggableProps}
+                                  ref={draggableProvided.innerRef}
+                                >
+                                  <div {...draggableProvided.dragHandleProps}>
+                                    <PanToolIcon />
+                                  </div>
+                                  <Div key={palette._id}>
+                                    <h2>{palette.title}</h2>
+                                    {palette.colors.map((color, index) => {
+                                      return (
+                                        <ColorBox
+                                          key={index}
+                                          style={{ backgroundColor: color }}
+                                        ></ColorBox>
+                                      );
+                                    })}
+                                  </Div>
+                                  <h3>Likes: {palette.likesNumber}</h3>
+                                  <button
+                                    onClick={likePalette}
+                                    key={index}
+                                    value={palette._id}
+                                  >
+                                    Like
+                                  </button>
+                                  <button
+                                    onClick={addPaletteToFavorites}
+                                    key={index + 1}
+                                    value={palette._id}
+                                  >
+                                    Add to favorites
+                                  </button>
+                                </div>
+                              )}
+                            </Draggable>
+                          );
+                        })}
+                      </PaletteContainer>
+                    ) : isChecked ? (
+                      typeof favoritesPalettes.message === "string" ? (
+                        <h2>No hay palettes seleccionadas como favoritas</h2>
+                      ) : (
+                        <PaletteContainer>
+                          {favoritesPalettes.map((palette, index) => {
+                            return (
+                              <Draggable
+                                key={palette._id}
+                                draggableId={palette._id}
+                                index={index}
+                              >
+                                {(draggableProvided) => (
+                                  <div
+                                    key={index}
+                                    {...draggableProvided.draggableProps}
+                                    ref={draggableProvided.innerRef}
+                                    {...draggableProvided.dragHandleProps}
+                                  >
+                                    <Div key={palette._id}>
+                                      <h2>{palette.title}</h2>
+                                      {palette.colors.map((color, index) => {
+                                        return (
+                                          <ColorBox
+                                            key={index}
+                                            style={{ backgroundColor: color }}
+                                          ></ColorBox>
+                                        );
+                                      })}
+                                    </Div>
+                                    <h3>Likes: {palette.likesNumber}</h3>
+                                    <button
+                                      onClick={likePalette}
+                                      key={index}
+                                      value={palette._id}
+                                    >
+                                      Like
+                                    </button>
+                                    <button
+                                      onClick={addPaletteToFavorites}
+                                      key={index + 1}
+                                      value={palette._id}
+                                    >
+                                      Add to favorites
+                                    </button>
+                                  </div>
+                                )}
+                              </Draggable>
+                            );
+                          })}
+                        </PaletteContainer>
+                      )
+                    ) : (
+                      <h2>Inicie sesion para ver</h2>
+                    )}
+                  </>
+                  {droppableProvided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </>
+      </ThemeProvider>
     </>
   );
 };
