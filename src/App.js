@@ -9,19 +9,11 @@ import { AnimatePresence, motion } from "framer-motion";
 
 //Libraries
 import Cookies from "js-cookie";
-import { Sidebar, Menu, MenuItem, useProSidebar } from "react-pro-sidebar";
 
 //Material UI
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "@fontsource/readex-pro/600.css";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 
 //Views
 import Home from "./Components/Views/Home/Home";
@@ -57,7 +49,6 @@ const pageTransition = {
 
 const App = () => {
   const [darkmode, setDarkMode] = useState(false);
-  const { collapseSidebar } = useProSidebar();
   const location = useLocation();
 
   const theme = createTheme({
@@ -80,23 +71,7 @@ const App = () => {
             setDarkMode(!darkmode);
           }}
         />
-        <Sidebar
-          backgroundColor={darkmode ? "#313638" : "#E8E9EB"}
-          style={{ height: "100vh" }}
-        >
-          <Menu>
-            <MenuItem
-              icon={<MenuOutlinedIcon />}
-              onClick={() => {
-                collapseSidebar();
-              }}
-              style={{ textAlign: "center" }}
-            >
-              {" "}
-              <h2>Options</h2>
-            </MenuItem>
-          </Menu>
-        </Sidebar>
+
         <AnimatePresence>
           <Routes location={location} key={location.pathname}>
             <Route
