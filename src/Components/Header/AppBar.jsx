@@ -16,14 +16,25 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import Switch from "@mui/material/Switch";
+import HomeIcon from "@mui/icons-material/Home";
+import PaletteIcon from "@mui/icons-material/Palette";
+import SearchIcon from "@mui/icons-material/Search";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import "@fontsource/kalam";
 
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
-const PrimarySearchAppBar = ({ check, change }) => {
+const PrimarySearchAppBar = ({
+  check,
+  change,
+  show,
+  setShow,
+  isMobile,
+  isLogged,
+  setIsLogged,
+}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-  const [sideBarOpen, setSideBarOpen] = useState(false);
-
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -44,6 +55,10 @@ const PrimarySearchAppBar = ({ check, change }) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const showClass = () => {
+    setShow(!show);
+  };
+
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -61,8 +76,17 @@ const PrimarySearchAppBar = ({ check, change }) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      {isLogged ? (
+        <div>
+          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+          <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
+        </div>
+      ) : (
+        <div>
+          <MenuItem onClick={handleMenuClose}>Sign in</MenuItem>
+          <MenuItem onClick={handleMenuClose}>Sign up</MenuItem>
+        </div>
+      )}
     </Menu>
   );
 
@@ -83,38 +107,97 @@ const PrimarySearchAppBar = ({ check, change }) => {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="error">
-            <MailIcon />
-          </Badge>
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
-        <IconButton
-          size="large"
-          aria-label="show 17 new notifications"
-          color="inherit"
-        >
-          <Badge badgeContent={17} color="error">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem>
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          size="large"
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <AccountCircle />
-        </IconButton>
-        <p>Profile</p>
-      </MenuItem>
+      {isLogged ? (
+        <div>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <IconButton
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
+            >
+              <Badge>
+                <HomeIcon />
+              </Badge>
+            </IconButton>
+            <p>Home</p>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+            >
+              <Badge>
+                <PaletteIcon style={{ color: "#6C60FF" }} />
+              </Badge>
+            </IconButton>
+            <p style={{ color: "#6C60FF" }}>Generator</p>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <SearchIcon style={{ color: !check ? "#2B4570" : "#91E5F6" }} />
+            </IconButton>
+            <p style={{ color: !check ? "#2B4570" : "#91E5F6" }}>Explore</p>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <DashboardIcon style={{ color: "#5CAB7D" }} />
+            </IconButton>
+            <p style={{ color: "#5CAB7D" }}>Dashboard</p>
+          </MenuItem>
+        </div>
+      ) : (
+        <div>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <IconButton
+              size="large"
+              aria-label="show 4 new mails"
+              color="inherit"
+            >
+              <Badge>
+                <HomeIcon />
+              </Badge>
+            </IconButton>
+            <p>Home</p>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <IconButton
+              size="large"
+              aria-label="show 17 new notifications"
+              color="inherit"
+            >
+              <Badge>
+                <PaletteIcon style={{ color: "#6C60FF" }} />
+              </Badge>
+            </IconButton>
+            <p style={{ color: "#6C60FF" }}>Generator</p>
+          </MenuItem>
+          <MenuItem onClick={handleMobileMenuClose}>
+            <IconButton
+              size="large"
+              aria-label="account of current user"
+              aria-controls="primary-search-account-menu"
+              aria-haspopup="true"
+              color="inherit"
+            >
+              <SearchIcon style={{ color: !check ? "#2B4570" : "#91E5F6" }} />
+            </IconButton>
+            <p style={{ color: !check ? "#2B4570" : "#91E5F6" }}>Explore</p>
+          </MenuItem>
+        </div>
+      )}
     </Menu>
   );
 
@@ -122,22 +205,28 @@ const PrimarySearchAppBar = ({ check, change }) => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="transparent">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-            onClick={() => setSideBarOpen(!sideBarOpen)}
-          >
-            <MenuIcon />
-          </IconButton>
+          {isMobile ? (
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              sx={{ mr: 2 }}
+              onClick={showClass}
+            >
+              <MenuIcon />
+            </IconButton>
+          ) : (
+            <></>
+          )}
           <Typography
             variant="h6"
             noWrap
             component="div"
             sx={{ display: { xs: "flex", sm: "block" } }}
-            color={check ? "purple" : "purple"}
+            color={check ? "#6C60FF" : "#6C60FF"}
+            fontSize="35px"
+            fontFamily={"kalam"}
           >
             WeColor
           </Typography>
@@ -145,7 +234,7 @@ const PrimarySearchAppBar = ({ check, change }) => {
           <Box sx={{ display: { xs: "flex", md: "flex" } }}>
             <Switch {...label} onChange={change} checked={check} />
           </Box>
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ display: { xs: "none", sm: "flex", md: "flex" } }}>
             <IconButton
               size="large"
               edge="end"
@@ -158,18 +247,22 @@ const PrimarySearchAppBar = ({ check, change }) => {
               <AccountCircle />
             </IconButton>
           </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          {!isMobile ? (
+            <Box sx={{ display: { xs: "flex", md: "flex" } }}>
+              <IconButton
+                size="large"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </Box>
+          ) : (
+            <></>
+          )}
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
