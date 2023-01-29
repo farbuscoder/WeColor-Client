@@ -22,6 +22,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import "@fontsource/kalam";
 
+//React router dom
+import { Link } from "react-router-dom";
+
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
 const PrimarySearchAppBar = ({
@@ -37,6 +40,8 @@ const PrimarySearchAppBar = ({
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  console.log("AppBar.js: " + isLogged);
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -77,15 +82,9 @@ const PrimarySearchAppBar = ({
       onClose={handleMenuClose}
     >
       {isLogged ? (
-        <div>
-          <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
-        </div>
+        <LoggedRenderMenu check={check} handleMenuClose={handleMenuClose} />
       ) : (
-        <div>
-          <MenuItem onClick={handleMenuClose}>Sign in</MenuItem>
-          <MenuItem onClick={handleMenuClose}>Sign up</MenuItem>
-        </div>
+        <NotLoggedRenderMenu check={check} handleMenuClose={handleMenuClose} />
       )}
     </Menu>
   );
@@ -108,95 +107,15 @@ const PrimarySearchAppBar = ({
       onClose={handleMobileMenuClose}
     >
       {isLogged ? (
-        <div>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge>
-                <HomeIcon />
-              </Badge>
-            </IconButton>
-            <p>Home</p>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge>
-                <PaletteIcon style={{ color: "#6C60FF" }} />
-              </Badge>
-            </IconButton>
-            <p style={{ color: "#6C60FF" }}>Generator</p>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <SearchIcon style={{ color: !check ? "#2B4570" : "#91E5F6" }} />
-            </IconButton>
-            <p style={{ color: !check ? "#2B4570" : "#91E5F6" }}>Explore</p>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <DashboardIcon style={{ color: "#5CAB7D" }} />
-            </IconButton>
-            <p style={{ color: "#5CAB7D" }}>Dashboard</p>
-          </MenuItem>
-        </div>
+        <LoggedRenderMobileMenu
+          check={check}
+          handleMobileMenuClose={handleMobileMenuClose}
+        />
       ) : (
-        <div>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <IconButton
-              size="large"
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge>
-                <HomeIcon />
-              </Badge>
-            </IconButton>
-            <p>Home</p>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge>
-                <PaletteIcon style={{ color: "#6C60FF" }} />
-              </Badge>
-            </IconButton>
-            <p style={{ color: "#6C60FF" }}>Generator</p>
-          </MenuItem>
-          <MenuItem onClick={handleMobileMenuClose}>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
-              aria-haspopup="true"
-              color="inherit"
-            >
-              <SearchIcon style={{ color: !check ? "#2B4570" : "#91E5F6" }} />
-            </IconButton>
-            <p style={{ color: !check ? "#2B4570" : "#91E5F6" }}>Explore</p>
-          </MenuItem>
-        </div>
+        <NotLoggedRenderMobileMenu
+          check={check}
+          handleMobileMenuClose={handleMobileMenuClose}
+        />
       )}
     </Menu>
   );
@@ -272,3 +191,209 @@ const PrimarySearchAppBar = ({
 };
 
 export default PrimarySearchAppBar;
+
+const NotLoggedRenderMobileMenu = ({ check, handleMobileMenuClose }) => {
+  return (
+    <div>
+      <Link
+        to="/"
+        style={{
+          textDecoration: "none",
+          color: check ? "white" : "black",
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuClose}>
+          <IconButton
+            size="large"
+            aria-label="show 4 new mails"
+            color="inherit"
+          >
+            <Badge>
+              <HomeIcon />
+            </Badge>
+          </IconButton>
+          <p>Home</p>
+        </MenuItem>
+      </Link>
+      <Link
+        to="generator"
+        style={{
+          textDecoration: "none",
+          color: "#6C60FF",
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuClose}>
+          <IconButton
+            size="large"
+            aria-label="show 17 new notifications"
+            color="inherit"
+          >
+            <Badge>
+              <PaletteIcon />
+            </Badge>
+          </IconButton>
+          <p>Generator</p>
+        </MenuItem>
+      </Link>
+      <Link
+        to="explore"
+        style={{
+          textDecoration: "none",
+          color: !check ? "#2B4570" : "#91E5F6",
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuClose}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <SearchIcon />
+          </IconButton>
+          <p>Explore</p>
+        </MenuItem>
+      </Link>
+    </div>
+  );
+};
+
+const LoggedRenderMobileMenu = ({ check, handleMobileMenuClose }) => {
+  return (
+    <div>
+      <Link
+        to="/"
+        style={{
+          textDecoration: "none",
+          color: check ? "white" : "black",
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuClose}>
+          <IconButton
+            size="large"
+            aria-label="show 4 new mails"
+            color="inherit"
+          >
+            <Badge>
+              <HomeIcon />
+            </Badge>
+          </IconButton>
+          <p>Home</p>
+        </MenuItem>
+      </Link>
+      <Link
+        to="generator"
+        style={{
+          textDecoration: "none",
+          color: "#6C60FF",
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuClose}>
+          <IconButton
+            size="large"
+            aria-label="show 17 new notifications"
+            color="inherit"
+          >
+            <Badge>
+              <PaletteIcon />
+            </Badge>
+          </IconButton>
+          <p>Generator</p>
+        </MenuItem>
+      </Link>
+      <Link
+        to="explore"
+        style={{
+          textDecoration: "none",
+          color: !check ? "#2B4570" : "#91E5F6",
+        }}
+      >
+        <MenuItem onClick={handleMobileMenuClose}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <SearchIcon />
+          </IconButton>
+          <p>Explore</p>
+        </MenuItem>
+      </Link>
+      <Link to="dashboard" style={{ textDecoration: "none", color: "#5CAB7D" }}>
+        <MenuItem onClick={handleMobileMenuClose}>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <DashboardIcon />
+          </IconButton>
+          <p>Dashboard</p>
+        </MenuItem>
+      </Link>
+    </div>
+  );
+};
+
+const LoggedRenderMenu = ({ check, handleMenuClose }) => {
+  return (
+    <div>
+      <MenuItem onClick={handleMenuClose}>
+        <Link
+          style={{
+            textDecoration: "none",
+            color: check ? "white" : "black",
+          }}
+          to="/profileview"
+        >
+          Profile
+        </Link>
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Link
+          style={{
+            textDecoration: "none",
+            color: check ? "white" : "black",
+          }}
+          to="/"
+        >
+          Sign out
+        </Link>
+      </MenuItem>
+    </div>
+  );
+};
+
+const NotLoggedRenderMenu = ({ check, handleMenuClose }) => {
+  return (
+    <div>
+      <MenuItem onClick={handleMenuClose}>
+        <Link
+          style={{
+            textDecoration: "none",
+            color: check ? "white" : "black",
+          }}
+          to="/signin"
+        >
+          Sign in
+        </Link>
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        <Link
+          style={{
+            textDecoration: "none",
+            color: check ? "white" : "black",
+          }}
+          to="/signup"
+        >
+          Sign up
+        </Link>
+      </MenuItem>
+    </div>
+  );
+};

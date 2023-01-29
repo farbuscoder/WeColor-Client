@@ -1,9 +1,17 @@
 import React from "react";
 
+//Components
+import SignInForm from "./SignInForm";
+
+//css
+import "../auth-styles.css";
+
 const Signin = () => {
   return (
     <>
-      <h1>SignIn</h1>
+      <div className="signin-body">
+        <SignInForm />
+      </div>
     </>
   );
 };
