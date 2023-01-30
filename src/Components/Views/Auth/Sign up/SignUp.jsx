@@ -1,9 +1,17 @@
 import React from "react";
 
+//Css
+import "../auth-styles.css";
+
+//Components
+import SignUpForm from "./SignUpForm";
+
 const Signup = () => {
   return (
     <>
-      <h1>Signup</h1>
+      <div className="auth-body">
+        <SignUpForm />
+      </div>
     </>
   );
 };

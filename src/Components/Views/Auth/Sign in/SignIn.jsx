@@ -9,7 +9,7 @@ import "../auth-styles.css";
 const Signin = () => {
   return (
     <>
-      <div className="signin-body">
+      <div className="auth-body">
         <SignInForm />
       </div>
     </>

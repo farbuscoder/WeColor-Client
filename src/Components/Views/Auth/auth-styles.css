@@ -1,0 +1,74 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --purple-color: #6c60ff;
+  --darkGray-color: #181818;
+}
+
+.auth-body {
+  margin: 0;
+}
+
+.auth-container {
+  border: 2px solid green;
+  height: 93vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #888492;
+}
+
+.auth-container form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px,
+    rgb(209, 213, 219) 0px 0px 0px 1px inset;
+  background-color: #ffff;
+  width: 80vw;
+}
+
+.auth-container form div {
+  width: 95%;
+  margin: 10px;
+}
+
+.auth-container form div input {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.8rem;
+  border: 0.5px solid #4e4e4e7c;
+}
+
+.auth-container form p {
+  text-align: center;
+  font-size: 12px;
+}
+
+.auth-container form .sign-button {
+  padding: 0.5rem;
+  width: 70%;
+  border: none;
+  background-color: var(--purple-color);
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ffff;
+  margin: 0.5rem;
+}
+
+.auth-container form .sign-with-google-button {
+  padding: 0.5rem;
+  width: 70%;
+  border: none;
+  background-color: var(--darkGray-color);
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ffff;
+  margin: 0.5rem;
+}
