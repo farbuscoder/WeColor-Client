@@ -16,19 +16,51 @@ import Cookies from "js-cookie";
 //Css
 import "../auth-styles.css";
 
-const { REACT_APP_API_ENDPOINT } = process.env;
+//Redux
+import {
+  loginFailure,
+  loginSuccess,
+  loginStart,
+} from "../../../../redux/userSlice";
+import { useDispatch } from "react-redux";
+import { ErrorSharp } from "@mui/icons-material";
+
+const { REACT_APP_API_DEV_URL } = process.env;
 
 const SignUpForm = () => {
-  const url = REACT_APP_API_ENDPOINT;
-  console.log(url);
-
+  const url = REACT_APP_API_DEV_URL;
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleSignUp = async (user) => {
+    const { email, name, password } = user;
+
+    dispatch(loginStart());
+
+    try {
+      const userLogged = await axios.post(`${url}/auth/signup`, {
+        email,
+        name,
+        password,
+      });
+      console.log(userLogged);
+      dispatch(loginSuccess(userLogged.data.user));
+      navigate("/signIn", { replace: true });
+    } catch (error) {
+      dispatch(loginFailure());
+      console.log(error);
+    }
+  };
+
+  /* const setTokenToCookies = async (cookiesToken) => {
+    Cookies.set("we_color_token", cookiesToken);
+  };*/
 
   //Validation Schema
   const required = "* Required field";
 
   const validationSchema = Yup.object().shape({
-    username: Yup.string()
+    name: Yup.string()
       .min(5, "Must have more than 5 characters")
       .required(required),
     email: Yup.string().email("Must be a valid email").required("required"),
@@ -61,6 +93,9 @@ const SignUpForm = () => {
             password: values.password,
           };
           //Function
+
+          handleSignUp(user);
+          console.log("SENT");
         }}
       >
         {({ errors }) => (
@@ -76,7 +111,7 @@ const SignUpForm = () => {
               <ErrorMessage
                 name="name"
                 component={() => {
-                  return <div></div>;
+                  return <div className="error">{errors.name}</div>;
                 }}
               />
             </div>
@@ -90,7 +125,7 @@ const SignUpForm = () => {
               <ErrorMessage
                 name="email"
                 component={() => {
-                  return <div></div>;
+                  return <div className="error">{errors.email}</div>;
                 }}
               />
             </div>
@@ -104,7 +139,7 @@ const SignUpForm = () => {
               <ErrorMessage
                 name="password"
                 component={() => {
-                  return <div></div>;
+                  return <div className="error">{errors.password}</div>;
                 }}
               />
             </div>
@@ -118,7 +153,7 @@ const SignUpForm = () => {
               <ErrorMessage
                 name="confirmPassword"
                 component={() => {
-                  return <div></div>;
+                  return <div className="error">{errors.confirmPassword}</div>;
                 }}
               />
             </div>
@@ -131,7 +166,9 @@ const SignUpForm = () => {
                 Sign Up.
               </Link>
             </p>
-            <button className="sign-button">Sign in</button>
+            <button type="submit" className="sign-button">
+              Sign up
+            </button>
             <button className="sign-with-google-button">
               Sign in with Google
             </button>

@@ -59,6 +59,7 @@
   font-weight: bold;
   color: #ffff;
   margin: 0.5rem;
+  cursor: pointer;
 }
 
 .auth-container form .sign-with-google-button {
@@ -71,4 +72,5 @@
   font-weight: bold;
   color: #ffff;
   margin: 0.5rem;
+  cursor: pointer;
 }
