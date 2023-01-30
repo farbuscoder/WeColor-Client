@@ -16,10 +16,10 @@ import Cookies from "js-cookie";
 //Css
 import "../auth-styles.css";
 
-const { REACT_APP_API_DEV } = process.env;
+const { REACT_APP_API_ENDPOINT } = process.env;
 
 const SignUpForm = () => {
-  const url = REACT_APP_API_DEV;
+  const url = REACT_APP_API_ENDPOINT;
   console.log(url);
 
   const navigate = useNavigate();
