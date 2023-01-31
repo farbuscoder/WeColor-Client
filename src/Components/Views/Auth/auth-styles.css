@@ -88,3 +88,8 @@
 .auth-container form .sign-with-google-button:active {
   background-color: var(--darkGray-active-hover);
 }
+
+.error {
+  color: var(--error-color);
+  font-size: 0.75rem;
+}
