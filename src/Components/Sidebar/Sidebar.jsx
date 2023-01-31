@@ -19,6 +19,7 @@ import "./Sidebar-styles.css";
 const Sidebar = (props) => {
   const { show, setShow, isLogged, setIsLogged } = props;
   const { darkmode } = useSelector((state) => state.darkmode);
+  const { currentUser } = useSelector((state) => state.user);
 
   const handleHide = () => {
     setShow(!show);
@@ -40,7 +41,7 @@ const Sidebar = (props) => {
         >
           <MenuIcon />
         </div>
-        {isLogged ? (
+        {currentUser ? (
           <LoggedUserList handleHide={handleHide} darkmode={darkmode} />
         ) : (
           <NotLoggedUserList handleHide={handleHide} darkmode={darkmode} />

@@ -62,6 +62,7 @@ const App = () => {
   const isMobile = useMobile();
   const location = useLocation();
   const { darkmode } = useSelector((state) => state.darkmode);
+  const { currentUser } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   console.log(darkmode);
@@ -81,14 +82,7 @@ const App = () => {
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        {isMobile ? (
-          <Sidebar
-            show={show}
-            setShow={setShow}
-            isLogged={isLogged}
-            setIsLogged={setIsLogged}
-          />
-        ) : null}
+        {isMobile ? <Sidebar show={show} setShow={setShow} /> : null}
         <PrimarySearchAppBar
           check={darkmode}
           change={() => {
@@ -103,12 +97,10 @@ const App = () => {
           show={show}
           setShow={setShow}
           isMobile={isMobile}
-          isLogged={isLogged}
-          setIsLogged={setIsLogged}
         />
 
         <AnimatePresence>
-          {isLogged ? (
+          {currentUser ? (
             <SignInRoutes location={location} pageTransition={pageTransition} />
           ) : (
             <SignOutRoutes

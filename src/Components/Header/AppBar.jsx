@@ -22,6 +22,9 @@ import SearchIcon from "@mui/icons-material/Search";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import "@fontsource/kalam";
 
+//Redux
+import { useSelector } from "react-redux";
+
 //React router dom
 import { Link } from "react-router-dom";
 
@@ -40,6 +43,8 @@ const PrimarySearchAppBar = ({
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const { currentUser } = useSelector((state) => state.user);
 
   console.log("AppBar.js: " + isLogged);
 
@@ -81,7 +86,7 @@ const PrimarySearchAppBar = ({
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {isLogged ? (
+      {currentUser ? (
         <LoggedRenderMenu check={check} handleMenuClose={handleMenuClose} />
       ) : (
         <NotLoggedRenderMenu check={check} handleMenuClose={handleMenuClose} />
@@ -106,7 +111,7 @@ const PrimarySearchAppBar = ({
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      {isLogged ? (
+      {currentUser ? (
         <LoggedRenderMobileMenu
           check={check}
           handleMobileMenuClose={handleMobileMenuClose}

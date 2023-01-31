@@ -36,8 +36,6 @@ const SignUpForm = () => {
   const handleSignUp = async (user) => {
     const { email, name, password } = user;
 
-    dispatch(loginStart());
-
     try {
       const userRegistered = await axios.post(`${url}/auth/signup`, {
         email,
@@ -45,10 +43,9 @@ const SignUpForm = () => {
         password,
       });
       console.log(userRegistered);
-      dispatch(loginSuccess(userRegistered.data.user));
+
       navigate("/signIn", { replace: true });
     } catch (error) {
-      dispatch(loginFailure());
       console.log(error.response?.data.message);
     }
   };
