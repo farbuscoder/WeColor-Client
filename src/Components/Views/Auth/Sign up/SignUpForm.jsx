@@ -23,7 +23,6 @@ import {
   loginStart,
 } from "../../../../redux/userSlice";
 import { useDispatch } from "react-redux";
-import { ErrorSharp } from "@mui/icons-material";
 
 const { REACT_APP_API_DEV_URL } = process.env;
 
@@ -38,17 +37,17 @@ const SignUpForm = () => {
     dispatch(loginStart());
 
     try {
-      const userLogged = await axios.post(`${url}/auth/signup`, {
+      const userRegistered = await axios.post(`${url}/auth/signup`, {
         email,
         name,
         password,
       });
-      console.log(userLogged);
-      dispatch(loginSuccess(userLogged.data.user));
+      console.log(userRegistered);
+      dispatch(loginSuccess(userRegistered.data.user));
       navigate("/signIn", { replace: true });
     } catch (error) {
       dispatch(loginFailure());
-      console.log(error);
+      console.log(error.response?.data.message);
     }
   };
 
@@ -63,7 +62,7 @@ const SignUpForm = () => {
     name: Yup.string()
       .min(5, "Must have more than 5 characters")
       .required(required),
-    email: Yup.string().email("Must be a valid email").required("required"),
+    email: Yup.string().email("Must be a valid email").required(required),
     password: Yup.string()
       .min(8, ",Must be atleast 8 characters long")
       .required(required),
@@ -106,7 +105,7 @@ const SignUpForm = () => {
                 type="text"
                 name="name"
                 placeholder="Name"
-                className="input"
+                className={errors.name ? "input error-border" : "input"}
               />
               <ErrorMessage
                 name="name"
@@ -120,7 +119,7 @@ const SignUpForm = () => {
                 type="text"
                 name="email"
                 placeholder="Email"
-                className="input"
+                className={errors.email ? "input error-border" : "input"}
               />
               <ErrorMessage
                 name="email"
@@ -134,7 +133,7 @@ const SignUpForm = () => {
                 type="password"
                 name="password"
                 placeholder="Password"
-                className="input"
+                className={errors.password ? "input error-border" : "input"}
               />
               <ErrorMessage
                 name="password"
@@ -148,7 +147,9 @@ const SignUpForm = () => {
                 type="password"
                 name="confirmPassword"
                 placeholder="Repeat password"
-                className="input"
+                className={
+                  errors.confirmPassword ? "input error-border" : "input"
+                }
               />
               <ErrorMessage
                 name="confirmPassword"

@@ -15,6 +15,11 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import "@fontsource/readex-pro/600.css";
 
+//Redux
+import { useDispatch } from "react-redux";
+import { setDarkModeToTrue, setDarkModeToFalse } from "./redux/darkModeSlice";
+import { useSelector } from "react-redux";
+
 //Views
 import Home from "./Components/Views/Home/Home";
 import Signin from "./Components/Views/Auth/Sign in/SignIn";
@@ -52,11 +57,15 @@ const pageTransition = {
 };
 
 const App = () => {
-  const [darkmode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   const [show, setShow] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const isMobile = useMobile();
   const location = useLocation();
+  const { darkmode } = useSelector((state) => state.darkmode);
+  const dispatch = useDispatch();
+
+  console.log(darkmode);
 
   console.log("App.js: " + isLogged);
 
@@ -84,7 +93,13 @@ const App = () => {
         <PrimarySearchAppBar
           check={darkmode}
           change={() => {
-            setDarkMode(!darkmode);
+            if (darkmode === true) {
+              dispatch(setDarkModeToFalse(false));
+            } else {
+              dispatch(setDarkModeToTrue(true));
+            }
+
+            return;
           }}
           show={show}
           setShow={setShow}

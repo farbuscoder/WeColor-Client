@@ -5,6 +5,9 @@
 :root {
   --purple-color: #6c60ff;
   --darkGray-color: #181818;
+  --purple-active-hover: #918ae2;
+  --darkGray-active-hover: #2f2f2f;
+  --error-color: #db324d;
 }
 
 .auth-body {
@@ -12,7 +15,6 @@
 }
 
 .auth-container {
-  border: 2px solid green;
   height: 93vh;
   display: flex;
   justify-content: center;
@@ -34,7 +36,7 @@
 
 .auth-container form div {
   width: 95%;
-  margin: 10px;
+  margin: 8px;
 }
 
 .auth-container form div input {
@@ -42,6 +44,10 @@
   padding: 0.5rem;
   border-radius: 0.8rem;
   border: 0.5px solid #4e4e4e7c;
+}
+
+.auth-container form div .error-border {
+  border: 1px solid var(--error-color);
 }
 
 .auth-container form p {
@@ -62,6 +68,10 @@
   cursor: pointer;
 }
 
+.auth-container form .sign-button:active {
+  background-color: var(--purple-active-hover);
+}
+
 .auth-container form .sign-with-google-button {
   padding: 0.5rem;
   width: 70%;
@@ -73,4 +83,8 @@
   color: #ffff;
   margin: 0.5rem;
   cursor: pointer;
+}
+
+.auth-container form .sign-with-google-button:active {
+  background-color: var(--darkGray-active-hover);
 }
