@@ -57,7 +57,6 @@ const pageTransition = {
 };
 
 const App = () => {
-  const [darkMode, setDarkMode] = useState(false);
   const [show, setShow] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const isMobile = useMobile();

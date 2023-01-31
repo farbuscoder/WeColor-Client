@@ -10,11 +10,15 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import SearchIcon from "@mui/icons-material/Search";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
+//Redux
+import { useSelector } from "react-redux";
+
 //Css
 import "./Sidebar-styles.css";
 
 const Sidebar = (props) => {
   const { show, setShow, isLogged, setIsLogged } = props;
+  const { darkmode } = useSelector((state) => state.darkmode);
 
   const handleHide = () => {
     setShow(!show);
@@ -22,30 +26,40 @@ const Sidebar = (props) => {
 
   return (
     <>
-      <div className={show ? "side-bar show" : "side-bar "} id="side-bar">
+      <div
+        className={show ? "side-bar show" : "side-bar "}
+        id="side-bar"
+        style={{
+          backgroundColor: darkmode ? "#292929" : "white",
+        }}
+      >
         <div
-          style={{ cursor: "pointer" }}
+          style={{ cursor: "pointer", color: darkmode ? "white" : "black" }}
           className="side-bar-btn"
           onClick={handleHide}
         >
           <MenuIcon />
         </div>
         {isLogged ? (
-          <LoggedUserList handleHide={handleHide} />
+          <LoggedUserList handleHide={handleHide} darkmode={darkmode} />
         ) : (
-          <NotLoggedUserList handleHide={handleHide} />
+          <NotLoggedUserList handleHide={handleHide} darkmode={darkmode} />
         )}
       </div>
     </>
   );
 };
 
-const NotLoggedUserList = ({ handleHide }) => {
+const NotLoggedUserList = ({ handleHide, darkmode }) => {
   return (
     <ul>
-      <li style={{ fontSize: "22px" }}>
+      <li style={{ fontSize: "22px", color: darkmode ? "white" : "black" }}>
         <HomeIcon />
-        <Link onClick={handleHide} to="/">
+        <Link
+          style={{ color: darkmode ? "white" : "black" }}
+          onClick={handleHide}
+          to="/"
+        >
           Home
         </Link>
       </li>
@@ -55,19 +69,37 @@ const NotLoggedUserList = ({ handleHide }) => {
           Generator
         </Link>
       </li>
-      <li style={{ fontSize: "22px", borderBottom: "1px solid #848C8E" }}>
-        <SearchIcon style={{ color: "#2B4570" }} />
-        <Link style={{ color: "#2B4570" }} onClick={handleHide} to="/explore">
+      <li
+        style={{
+          fontSize: "22px",
+          borderBottom: "1px solid #848C8E",
+          color: darkmode ? "#91E5F6" : "#2B4570",
+        }}
+      >
+        <SearchIcon style={{ color: darkmode ? "#91E5F6" : "#2B4570" }} />
+        <Link
+          style={{ color: darkmode ? "#91E5F6" : "#2B4570" }}
+          onClick={handleHide}
+          to="/explore"
+        >
           Explore
         </Link>
       </li>
       <li>
-        <Link onClick={handleHide} to="/signin">
+        <Link
+          style={{ color: darkmode ? "white" : "black" }}
+          onClick={handleHide}
+          to="/signin"
+        >
           Sign in
         </Link>
       </li>
       <li>
-        <Link onClick={handleHide} to="/signup">
+        <Link
+          style={{ color: darkmode ? "white" : "black" }}
+          onClick={handleHide}
+          to="/signup"
+        >
           Sign up
         </Link>
       </li>

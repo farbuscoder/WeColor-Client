@@ -23,6 +23,7 @@ import {
   loginStart,
 } from "../../../../redux/userSlice";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const { REACT_APP_API_DEV_URL } = process.env;
 
@@ -30,6 +31,7 @@ const SignUpForm = () => {
   const url = REACT_APP_API_DEV_URL;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { darkmode } = useSelector((state) => state.darkmode);
 
   const handleSignUp = async (user) => {
     const { email, name, password } = user;
@@ -73,7 +75,10 @@ const SignUpForm = () => {
   });
 
   return (
-    <div className="auth-container">
+    <div
+      className="auth-container"
+      style={{ backgroundColor: darkmode ? "#0A0A0A" : "#888492" }}
+    >
       <Formik
         initialValues={{
           name: "",
@@ -98,7 +103,7 @@ const SignUpForm = () => {
         }}
       >
         {({ errors }) => (
-          <Form>
+          <Form style={{ backgroundColor: darkmode ? "#292929" : "#ffff" }}>
             <h2>Sign Up</h2>
             <div>
               <Field
