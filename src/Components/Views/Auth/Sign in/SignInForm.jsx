@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 //React router dom
 import { Link, useNavigate } from "react-router-dom";
@@ -25,12 +25,20 @@ import {
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
+//Components
+import { SwalError } from "../../../../utils/Swal";
+import SimpleBackDrop from "../../../../utils/SimpleBackDrop";
+
 const { REACT_APP_API_DEV_URL } = process.env;
 
 const SignInForm = () => {
   const url = REACT_APP_API_DEV_URL;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { darkmode } = useSelector((state) => state.darkmode);
+  const { loading } = useSelector((state) => state.user);
+  const [errorSwal, setErrorSwal] = useState("");
+
   const handleSignIn = async (user) => {
     const { email, password } = user;
 
@@ -55,9 +63,13 @@ const SignInForm = () => {
       navigate("/dashboard", { replace: true });
     } catch (error) {
       dispatch(loginFailure());
-      console.log(error.response?.data.message);
+      setErrorSwal(error.response?.data.message);
     }
   };
+
+  useEffect(() => {
+    setErrorSwal("");
+  }, [errorSwal]);
 
   const setTokenToCookies = async (cookiesToken) => {
     Cookies.set("we_color_token", cookiesToken);
@@ -75,7 +87,12 @@ const SignInForm = () => {
 
   return (
     <>
-      <div className="auth-container">
+      {loading ? <SimpleBackDrop open={loading}></SimpleBackDrop> : <></>}
+      {errorSwal != "" ? <SwalError message={errorSwal}></SwalError> : ""}
+      <div
+        className="auth-container"
+        style={{ backgroundColor: darkmode ? "#0A0A0A" : "#888492" }}
+      >
         <Formik
           initialValues={{
             email: "",
@@ -96,19 +113,19 @@ const SignInForm = () => {
           }}
         >
           {({ errors }) => (
-            <Form>
-              <h2>Sign in</h2>
+            <Form style={{ backgroundColor: darkmode ? "#292929" : "#ffff" }}>
+              <h2 style={{ color: darkmode ? "white" : "black" }}>Sign In</h2>
               <div>
                 <Field
                   type="text"
                   name="email"
                   placeholder="Email"
-                  className="input"
+                  className={errors.password ? "input error-border" : "input"}
                 />
                 <ErrorMessage
                   name="email"
                   component={() => {
-                    return <div></div>;
+                    return <div className="error">{errors.email}</div>;
                   }}
                 />
               </div>
@@ -117,12 +134,12 @@ const SignInForm = () => {
                   type="password"
                   name="password"
                   placeholder="Password"
-                  className="input"
+                  className={errors.password ? "input error-border" : "input"}
                 />
                 <ErrorMessage
                   name="password"
                   component={() => {
-                    return <div></div>;
+                    return <div className="error">{errors.password}</div>;
                   }}
                 />
               </div>

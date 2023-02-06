@@ -24,29 +24,35 @@ import "@fontsource/kalam";
 
 //Redux
 import { useSelector } from "react-redux";
+//Redux
+import { logout } from "../../redux/userSlice";
+import { useDispatch } from "react-redux";
 
 //React router dom
 import { Link } from "react-router-dom";
 
+//Libraries
+import Cookies from "js-cookie";
+
 const label = { inputProps: { "aria-label": "Switch demo" } };
 
-const PrimarySearchAppBar = ({
-  check,
-  change,
-  show,
-  setShow,
-  isMobile,
-  isLogged,
-  setIsLogged,
-}) => {
+const PrimarySearchAppBar = ({ check, change, show, setShow, isMobile }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const dispatch = useDispatch();
 
   const { currentUser } = useSelector((state) => state.user);
 
-  console.log("AppBar.js: " + isLogged);
+  const signOut = () => {
+    cleanCookies();
+    dispatch(logout());
+  };
+
+  const cleanCookies = () => {
+    Cookies.remove("we_color_token");
+  };
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -87,7 +93,11 @@ const PrimarySearchAppBar = ({
       onClose={handleMenuClose}
     >
       {currentUser ? (
-        <LoggedRenderMenu check={check} handleMenuClose={handleMenuClose} />
+        <LoggedRenderMenu
+          check={check}
+          handleMenuClose={handleMenuClose}
+          signOut={signOut}
+        />
       ) : (
         <NotLoggedRenderMenu check={check} handleMenuClose={handleMenuClose} />
       )}
@@ -345,7 +355,7 @@ const LoggedRenderMobileMenu = ({ check, handleMobileMenuClose }) => {
   );
 };
 
-const LoggedRenderMenu = ({ check, handleMenuClose }) => {
+const LoggedRenderMenu = ({ check, handleMenuClose, signOut }) => {
   return (
     <div>
       <MenuItem onClick={handleMenuClose}>
@@ -366,6 +376,9 @@ const LoggedRenderMenu = ({ check, handleMenuClose }) => {
             color: check ? "white" : "black",
           }}
           to="/"
+          onClick={() => {
+            signOut();
+          }}
         >
           Sign out
         </Link>

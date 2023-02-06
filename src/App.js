@@ -35,6 +35,7 @@ import Sidebar from "./Components/Sidebar/Sidebar";
 
 //Components
 import PrimarySearchAppBar from "../src/Components/Header/AppBar";
+import SimpleBackDrop from "../src/utils/SimpleBackDrop";
 
 //Hooks
 import useMobile from "./Hooks/useMobile";
@@ -63,6 +64,7 @@ const App = () => {
   const location = useLocation();
   const { darkmode } = useSelector((state) => state.darkmode);
   const { currentUser } = useSelector((state) => state.user);
+  const { loading } = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
   console.log(darkmode);
@@ -101,7 +103,11 @@ const App = () => {
 
         <AnimatePresence>
           {currentUser ? (
-            <SignInRoutes location={location} pageTransition={pageTransition} />
+            <SignInRoutes
+              location={location}
+              pageTransition={pageTransition}
+              loading={loading}
+            />
           ) : (
             <SignOutRoutes
               location={location}
@@ -206,7 +212,7 @@ const SignOutRoutes = ({ location, pageTransition }) => {
   );
 };
 
-const SignInRoutes = ({ location, pageTransition }) => {
+const SignInRoutes = ({ location, pageTransition, loading }) => {
   return (
     <Routes location={location} key={location.pathname}>
       <Route
@@ -308,6 +314,8 @@ const SignInRoutes = ({ location, pageTransition }) => {
             exit="out"
             variants={pageTransition}
           >
+            <SimpleBackDrop open={loading}></SimpleBackDrop>
+
             <Dashboard />
           </motion.div>
         }
@@ -322,7 +330,11 @@ const SignInRoutes = ({ location, pageTransition }) => {
             exit="out"
             variants={pageTransition}
           >
-            <Error404 />
+            {4 > 2 ? (
+              <SimpleBackDrop open={loading}></SimpleBackDrop>
+            ) : (
+              <Error404 />
+            )}
           </motion.div>
         }
       ></Route>

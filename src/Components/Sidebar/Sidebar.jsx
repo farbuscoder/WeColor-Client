@@ -10,19 +10,35 @@ import PaletteIcon from "@mui/icons-material/Palette";
 import SearchIcon from "@mui/icons-material/Search";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 
+//libraries
+import Cookies from "js-cookie";
+
 //Redux
 import { useSelector } from "react-redux";
+//Redux
+import { logout } from "../../redux/userSlice";
+import { useDispatch } from "react-redux";
 
 //Css
 import "./Sidebar-styles.css";
 
 const Sidebar = (props) => {
-  const { show, setShow, isLogged, setIsLogged } = props;
+  const { show, setShow } = props;
   const { darkmode } = useSelector((state) => state.darkmode);
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const handleHide = () => {
     setShow(!show);
+  };
+
+  const signOut = () => {
+    cleanCookies();
+    dispatch(logout());
+  };
+
+  const cleanCookies = () => {
+    Cookies.remove("we_color_token");
   };
 
   return (
@@ -42,7 +58,11 @@ const Sidebar = (props) => {
           <MenuIcon />
         </div>
         {currentUser ? (
-          <LoggedUserList handleHide={handleHide} darkmode={darkmode} />
+          <LoggedUserList
+            handleHide={handleHide}
+            darkmode={darkmode}
+            signOut={signOut}
+          />
         ) : (
           <NotLoggedUserList handleHide={handleHide} darkmode={darkmode} />
         )}
@@ -108,12 +128,16 @@ const NotLoggedUserList = ({ handleHide, darkmode }) => {
   );
 };
 
-const LoggedUserList = ({ handleHide }) => {
+const LoggedUserList = ({ handleHide, darkmode, signOut }) => {
   return (
     <ul>
       <li style={{ fontSize: "22px" }}>
-        <HomeIcon />
-        <Link onClick={handleHide} to="/">
+        <HomeIcon style={{ color: darkmode ? "white" : "black" }} />
+        <Link
+          style={{ color: darkmode ? "white" : "black" }}
+          onClick={handleHide}
+          to="/"
+        >
           Home
         </Link>
       </li>
@@ -124,8 +148,12 @@ const LoggedUserList = ({ handleHide }) => {
         </Link>
       </li>
       <li style={{ fontSize: "22px" }}>
-        <SearchIcon style={{ color: "#2B4570" }} />
-        <Link style={{ color: "#2B4570" }} onClick={handleHide} to="/explore">
+        <SearchIcon style={{ color: darkmode ? "#91E5F6" : "#2B4570" }} />
+        <Link
+          style={{ color: darkmode ? "#91E5F6" : "#2B4570" }}
+          onClick={handleHide}
+          to="/explore"
+        >
           Explore
         </Link>
       </li>
@@ -136,12 +164,23 @@ const LoggedUserList = ({ handleHide }) => {
         </Link>
       </li>
       <li>
-        <Link onClick={handleHide} to="/profileview">
+        <Link
+          style={{ color: darkmode ? "white" : "black" }}
+          onClick={handleHide}
+          to="/profileview"
+        >
           Profile
         </Link>
       </li>
       <li>
-        <Link onClick={handleHide} to="/">
+        <Link
+          style={{ color: darkmode ? "white" : "black" }}
+          onClick={() => {
+            handleHide();
+            signOut();
+          }}
+          to="/"
+        >
           Sign out
         </Link>
       </li>

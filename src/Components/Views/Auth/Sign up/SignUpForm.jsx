@@ -161,16 +161,16 @@ const SignUpForm = () => {
               />
             </div>
             <p>
-              Don't you have an account?,{" "}
+              Already have an account?,{" "}
               <Link
                 to="/signin"
                 style={{ textDecoration: "none", color: "#6c60ff" }}
               >
-                Sign Up.
+                Sign In!
               </Link>
             </p>
             <button type="submit" className="sign-button">
-              Sign up
+              Create account
             </button>
             <button className="sign-with-google-button">
               Sign in with Google
