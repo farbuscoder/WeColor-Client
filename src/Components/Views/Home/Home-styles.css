@@ -1,0 +1,114 @@
+.home-styles-body {
+  min-height: 93vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-content-one {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-height: 90vh;
+}
+
+.home-content-one h1 {
+  font-size: 40px;
+}
+
+.home-content-one img {
+  width: 18.75rem;
+  text-align: center;
+  height: 14rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-content-one .sign-button {
+  padding: 0.5rem;
+  width: 70%;
+  border: none;
+  background-color: var(--purple-color);
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ffff;
+  margin: 0.5rem;
+  cursor: pointer;
+}
+
+.home-content-one .explore-palettes-button {
+  padding: 0.5rem;
+  width: 70%;
+  border: none;
+  background-color: var(--darkGray-color);
+  border-radius: 5px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #ffff;
+  margin: 0.5rem;
+  cursor: pointer;
+}
+
+.home-content-two {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  height: 90vh;
+  position: relative;
+}
+
+.home-content-two img {
+  width: 18.75rem;
+  text-align: center;
+  height: 14rem;
+  margin-bottom: 1.8rem;
+}
+
+.home-content-two h1 {
+  font-size: 1.7rem;
+  color: rgb(95, 95, 95);
+  margin-bottom: 10rem;
+}
+
+.home-footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 25%;
+  background-color: #e2e2e2;
+  display: flex;
+  flex-direction: row;
+}
+
+.home-footer .column-one {
+  width: 50%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+}
+
+.home-footer .column-one ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0;
+  border-top: 0.5px solid rgb(158, 158, 158);
+  font-size: 0.8rem;
+  align-items: start;
+  align-content: start;
+  list-style-type: none;
+  padding: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.home-footer .column-one ul li {
+  text-align: start;
+  margin: 0.15rem;
+}
