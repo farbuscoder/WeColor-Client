@@ -8,7 +8,7 @@ const Footer = () => {
     <>
       <div
         className="home-footer"
-        style={{ backgroundColor: darkmode ? "#292929" : "#e2e2e2" }}
+        style={{ backgroundColor: darkmode ? "#292929" : "#ebebeb" }}
       >
         <div className="column-one">
           <h2>WeColor</h2>

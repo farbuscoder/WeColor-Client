@@ -1,8 +1,5 @@
 import React from "react";
 
-//Hooks
-import { isMobile } from "../../../Hooks/useMobile";
-
 //Redux
 import { useSelector } from "react-redux";
 
@@ -21,7 +18,7 @@ const Home = () => {
     <>
       <div className="home-styles-body">
         <div className="home-content-one">
-          <h1>Generate and save your best color palettes</h1>
+          <h1>Generate and save your best color palettes.</h1>
           <img
             src="https://i.ibb.co/qWv6K9N/undraw-color-schemes-wv48.png
         "
@@ -46,7 +43,7 @@ const Home = () => {
               alt="mobile-home-pic-two"
             ></img>
             <h1 style={{ color: darkmode ? "white" : "#5f5f5f" }}>
-              Thousands of colors just in the palm of your hand
+              Thousands of colors just in the palm of your hand.
             </h1>
           </div>
           <Footer></Footer>
