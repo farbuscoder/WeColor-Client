@@ -1,9 +1,15 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
 const Footer = () => {
+  const { darkmode } = useSelector((state) => state.darkmode);
+
   return (
     <>
-      <div className="home-footer">
+      <div
+        className="home-footer"
+        style={{ backgroundColor: darkmode ? "#292929" : "#e2e2e2" }}
+      >
         <div className="column-one">
           <h2>WeColor</h2>
           <ul>
