@@ -278,26 +278,6 @@ const LoggedRenderMobileMenu = ({ check, handleMobileMenuClose }) => {
   return (
     <div>
       <Link
-        to="/"
-        style={{
-          textDecoration: "none",
-          color: check ? "white" : "black",
-        }}
-      >
-        <MenuItem onClick={handleMobileMenuClose}>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            color="inherit"
-          >
-            <Badge>
-              <HomeIcon />
-            </Badge>
-          </IconButton>
-          <p>Home</p>
-        </MenuItem>
-      </Link>
-      <Link
         to="generator"
         style={{
           textDecoration: "none",

@@ -216,21 +216,6 @@ const SignInRoutes = ({ location, pageTransition, loading }) => {
   return (
     <Routes location={location} key={location.pathname}>
       <Route
-        path="/"
-        exact
-        element={
-          <motion.div
-            className="page"
-            initial="out"
-            animate="in"
-            exit="out"
-            variants={pageTransition}
-          >
-            <Home />
-          </motion.div>
-        }
-      ></Route>
-      <Route
         path="/explore"
         element={
           <motion.div

@@ -132,16 +132,6 @@ const LoggedUserList = ({ handleHide, darkmode, signOut }) => {
   return (
     <ul>
       <li style={{ fontSize: "22px" }}>
-        <HomeIcon style={{ color: darkmode ? "white" : "black" }} />
-        <Link
-          style={{ color: darkmode ? "white" : "black" }}
-          onClick={handleHide}
-          to="/"
-        >
-          Home
-        </Link>
-      </li>
-      <li style={{ fontSize: "22px" }}>
         <PaletteIcon style={{ color: "#6C60FF" }} />
         <Link style={{ color: "#6C60FF" }} onClick={handleHide} to="/generator">
           Generator
