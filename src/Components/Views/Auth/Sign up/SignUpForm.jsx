@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 //Formik
 import { Formik, Field, ErrorMessage, Form } from "formik";
@@ -18,12 +18,14 @@ import "../auth-styles.css";
 
 //Redux
 import {
-  loginFailure,
-  loginSuccess,
-  loginStart,
+  registeredSuccess,
+  registeredFailure,
 } from "../../../../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+
+//Components
+import { SwalError } from "../../../../utils/Swal";
 
 const { REACT_APP_API_DEV_URL } = process.env;
 
@@ -31,6 +33,7 @@ const SignUpForm = () => {
   const url = REACT_APP_API_DEV_URL;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [errorSwal, setErrorSwal] = useState("");
   const { darkmode } = useSelector((state) => state.darkmode);
 
   const handleSignUp = async (user) => {
@@ -42,13 +45,17 @@ const SignUpForm = () => {
         name,
         password,
       });
-      console.log(userRegistered);
 
       navigate("/signIn", { replace: true });
+      dispatch(registeredSuccess());
     } catch (error) {
-      console.log(error.response?.data.message);
+      setErrorSwal(error.response?.data.message);
     }
   };
+
+  useEffect(() => {
+    setErrorSwal("");
+  }, [errorSwal]);
 
   /* const setTokenToCookies = async (cookiesToken) => {
     Cookies.set("we_color_token", cookiesToken);
@@ -63,19 +70,20 @@ const SignUpForm = () => {
       .required(required),
     email: Yup.string().email("Must be a valid email").required(required),
     password: Yup.string()
-      .min(8, ",Must be atleast 8 characters long")
+      .min(8, "Must be atleast 8 characters long")
       .required(required),
     confirmPassword: Yup.string()
-      .min(8, ",Must be atleast 8 characters long")
+      .min(8, "Must be atleast 8 characters long")
       .required(required)
-      .oneOf([Yup.ref("password")], "Your passwords do not match"),
+      .oneOf([Yup.ref("password")], "Passwords does not match"),
   });
 
   return (
     <div
       className="auth-container"
-      style={{ backgroundColor: darkmode ? "#0A0A0A" : "#888492" }}
+      style={{ backgroundColor: darkmode ? "#2f2f2f" : "#ededed" }}
     >
+      {errorSwal != "" ? <SwalError message={errorSwal}></SwalError> : ""}
       <Formik
         initialValues={{
           name: "",

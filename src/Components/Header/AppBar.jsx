@@ -24,7 +24,7 @@ import "@fontsource/kalam";
 
 //Redux
 import { useSelector } from "react-redux";
-//Redux
+import { registeredFailure } from "../../redux/userSlice";
 import { logout } from "../../redux/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -42,12 +42,12 @@ const PrimarySearchAppBar = ({ check, change, show, setShow, isMobile }) => {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const dispatch = useDispatch();
-
   const { currentUser } = useSelector((state) => state.user);
 
   const signOut = () => {
     cleanCookies();
     dispatch(logout());
+    dispatch(registeredFailure());
   };
 
   const cleanCookies = () => {

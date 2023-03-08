@@ -15,7 +15,7 @@ import Cookies from "js-cookie";
 
 //Redux
 import { useSelector } from "react-redux";
-//Redux
+import { registeredFailure } from "../../redux/userSlice";
 import { logout } from "../../redux/userSlice";
 import { useDispatch } from "react-redux";
 
@@ -35,6 +35,7 @@ const Sidebar = (props) => {
   const signOut = () => {
     cleanCookies();
     dispatch(logout());
+    dispatch(registeredFailure());
   };
 
   const cleanCookies = () => {

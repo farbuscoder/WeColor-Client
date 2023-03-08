@@ -5,6 +5,7 @@ const initialState = {
   loading: false,
   error: false,
   message: "",
+  registered: false,
 };
 
 export const userSlice = createSlice({
@@ -23,6 +24,12 @@ export const userSlice = createSlice({
       state.currentUser = null;
       state.message = action.payload;
     },
+    registeredSuccess: (state) => {
+      state.registered = true;
+    },
+    registeredFailure: (state) => {
+      state.registered = false;
+    },
     logout: (state) => {
       state.currentUser = null;
       state.loading = false;
@@ -31,7 +38,13 @@ export const userSlice = createSlice({
   },
 });
 
-export const { loginStart, loginFailure, loginSuccess, logout } =
-  userSlice.actions;
+export const {
+  loginStart,
+  loginFailure,
+  loginSuccess,
+  logout,
+  registeredSuccess,
+  registeredFailure,
+} = userSlice.actions;
 
 export default userSlice.reducer;

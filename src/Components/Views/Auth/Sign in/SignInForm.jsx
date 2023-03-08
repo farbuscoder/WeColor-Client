@@ -12,6 +12,7 @@ import * as Yup from "yup";
 //Libraries
 import axios from "axios";
 import Cookies from "js-cookie";
+import toast, { Toaster } from "react-hot-toast";
 
 //Css
 import "../auth-styles.css";
@@ -21,6 +22,8 @@ import {
   loginFailure,
   loginSuccess,
   loginStart,
+  registeredFailure,
+  registeredSuccess,
 } from "../../../../redux/userSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
@@ -36,6 +39,7 @@ const SignInForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { darkmode } = useSelector((state) => state.darkmode);
+  const { registered } = useSelector((state) => state.user);
   const { loading } = useSelector((state) => state.user);
   const [errorSwal, setErrorSwal] = useState("");
 
@@ -57,15 +61,35 @@ const SignInForm = () => {
         }
       );
 
-      console.log(userLogged);
       dispatch(loginSuccess(userLogged.data.user));
       setTokenToCookies(userLogged.data.token);
       navigate("/dashboard", { replace: true });
+      dispatch(registeredSuccess());
     } catch (error) {
       dispatch(loginFailure());
       setErrorSwal(error.response?.data.message);
     }
   };
+
+  useEffect(() => {
+    if (registered) {
+      toast.success(
+        "Registered successfully, login to start creating color palettes!",
+        {
+          icon: "👏",
+          duration: 5000,
+        }
+      );
+    }
+
+    return;
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      dispatch(registeredFailure());
+    }, 5000);
+  }, []);
 
   useEffect(() => {
     setErrorSwal("");
@@ -91,8 +115,9 @@ const SignInForm = () => {
       {errorSwal != "" ? <SwalError message={errorSwal}></SwalError> : ""}
       <div
         className="auth-container"
-        style={{ backgroundColor: darkmode ? "#0A0A0A" : "#888492" }}
+        style={{ backgroundColor: darkmode ? "#2f2f2f" : "#ededed" }}
       >
+        <Toaster position="top-center" />
         <Formik
           initialValues={{
             email: "",
